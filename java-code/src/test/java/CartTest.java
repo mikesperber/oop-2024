@@ -70,5 +70,4 @@ class CartTest {
                         DeliveryAddress.of("Diagon Alley", AddressType.PACKSTATION)))
                 .isTrue();
     }
-
 }
