@@ -1,23 +1,23 @@
 public class CartTest {
     @Test
-    void givenAnEmptyCartWhenAddingAFashionArticleThenPaymentMethodCanBeSepaMandate() {
+    void givenAnEmptyCartWhenAddingALifestyleArticleThenDeliveryAddressCanBePackstation() {
         // given
         var cartUnderTest = new Cart();
         
         // when
-        cartUnderTest.put(new FashionArticle("Christian Dior Skirt XS"));
+        cartUnderTest.put(new Article(ArticleCategory.LIFESTYLE, "Candles"));
         
         // then
         assertThat(cartUnderTest).isPaymentMethodAllowed(PaymentMethod.SEPA_MANDATE).equals(true);
     }
 
     @Test
-    void givenAnEmptyCartWhenAddingACosmeticsArticleThenPaymentMethodCannotBeSepaMandate() {
+    void givenAnEmptyCartWhenAddingAFurnitureArticleThenDeliveryAddressCannotBePackstation() {
         // given
         var cartUnderTest = new Cart();
         
         // when
-        cartUnderTest.put(new CosmeticsArticle("Gucci Red and Blue"));
+        cartUnderTest.put(new Article("Gucci Red and Blue"));
         
         // then
         assertThat(cartUnderTest).isPaymentMethodAllowed(PaymentMethod.SEPA_MANDATE).equals(false);
