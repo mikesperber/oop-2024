@@ -1,5 +1,18 @@
 # DDD and FP Can't Be Friends, Yet
 
+## Java-Code
+
+```sh
+cd java-code
+mvn compile
+```
+
+Test should fail:
+
+```sh
+mvn test
+```
+
 ## Haskell-Code Via Docker (Windows, macOS, Linux, ...)
 
 - [Docker](https://www.docker.com/) installieren
