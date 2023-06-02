@@ -1,5 +1,6 @@
 import static org.assertj.core.api.Assertions.*;
 
+import org.jmolecules.ddd.annotation.Entity;
 import org.jmolecules.ddd.annotation.ValueObject;
 import org.junit.jupiter.api.Test;
 
@@ -11,8 +12,10 @@ record ArticleID(int id) {
     }
 }
 
+@ValueObject
 enum ArticleCategory{ LIFESTYLE, FURNITURE }
 
+@Entity
 class Article {
 
     public Article(ArticleID id, String description, ArticleCategory category) {
@@ -20,15 +23,18 @@ class Article {
 
 }
 
+@ValueObject
 record DeliveryAddress(String address, AddressType type) {
     public static DeliveryAddress of(String address, AddressType type) {
         return new DeliveryAddress(address, type);
     }
 }
 
+@ValueObject
 enum AddressType{ HOME_ADDRESS, PACKSTATION }
 
 
+@Entity
 class Cart {
     public void put(Article article) {
         throw new RuntimeException("Not implemented yet");
