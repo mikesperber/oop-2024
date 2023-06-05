@@ -2,8 +2,16 @@
 
 ## Introduction
 
-Mike: I have customer
-Henning: Domain Story EAKI-1
+Open Slides
+Show introduction slide
+Mike: I'm Mike and hang around FP conferences. I use Emacs.
+Henning: Im Henning and hang around DDD and Java, C# and even PHP conferences. I use Vee-Eye. How do you do, Mike?
+
+Mike: I have a customer
+
+Slide "Cart"
+
+Henning: Lets's model Domain Story EAKI-1
 Mike: I see cart, cart, cart -> Lets write code to model the cart
 Henning: I would do strategic design first
 
@@ -11,6 +19,9 @@ Henning: I would do strategic design first
 
 Henning: Draw boundaries EAKI-1
 [Mike: Want to write code!]
+
+Henning: Lets look at more detail at the bounded context "delivery".
+Models AEKI-2 and -3.
 
 ... Packstation ...
 
@@ -32,6 +43,11 @@ data Address =
   | PackStation
   deriving Show
 
+data TentativeShippingAddress
+  = NoAddress
+  | ValidAddress ShippingAddress
+  | InvalidAddress ShippingAddress InvalidAddressReason
+
 data InvalidShippingAddressReason
     = NoFurnitureToPackStation
 ```
@@ -45,6 +61,13 @@ Mike: You write code, Henning.
 Henning: I would start in a TDD/BDD fashion.
 
 ```java
+import static org.assertj.core.api.Assertions.*;
+
+import org.jmolecules.ddd.annotation.Entity;
+import org.jmolecules.ddd.annotation.ValueObject;
+import org.junit.jupiter.api.Test;
+
+
 public class CartTest {
     @Test
     void givenAnEmptyCartWhenAddingALifestyleArticleThenDeliveryAddressCanBePackstation() {
@@ -113,7 +136,11 @@ data Cart
     | YellowCart [Article] TentativeAddress
 ```
 
+Henning: Again, Mike, we have to check these words wiht our domain experts. Dear auditorium, you buy furniture yourself. Quick raise of hands—who is for solution a, who for solution b?
+
+
 ... validation ...
+
 
 ## Abstraction (optional)
 
@@ -139,7 +166,18 @@ Henning: WHY? Those are all great FP terms, but they are not part of the domain 
 
 Mike: They're not part of the domain vocabulary, they are
 *properties* of things in your domain vocabulary.  I'm using
-them to learn about the domain.  Also, they are useful
+math to learn about the domain.  
+
+Henning: Hold your horses, now it's 4:40 pm on a Friday after a long conference. I think we want come from the code to a more abstract level. What now?
+
+Mike: We can try to distill what we just did into a couple of fundamentals.
+
+Slides (UL vs. Abstraction)
+
+
+## Optional
+
+Also, they are useful
 when writing code:
 
 ```haskell
@@ -162,7 +200,5 @@ cart articles maybeTentativeAddress =
     Just (TentativeGood cart) -> cart
     _ -> YellowCart articles maybeTentativeAddress
 ```
-
-## Optional
 
 - article -> entity -> ID

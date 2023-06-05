@@ -48,7 +48,7 @@ class Cart {
 
 class CartTest {
     @Test
-    void givenAnEmptyCartWhenAddingALifestyleArticleThenDeliveryAddressCanBePackstation() {
+    void givenAnEmptyCart_WhenAddingALifestyleArticle_ThenDeliveryAddressCanBePackstation() {
         // given
         var cartUnderTest = new Cart();
         
@@ -63,7 +63,7 @@ class CartTest {
     }
 
     @Test
-    void givenAnEmptyCartWhenAddingAFurnitureArticleThenDeliveryAddressCannotBePackstation() {
+    void givenAnEmptyCart_WhenAddingAFurnitureArticle_ThenDeliveryAddressCannotBePackstation() {
         // given
         var cartUnderTest = new Cart();
         
