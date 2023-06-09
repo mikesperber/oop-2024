@@ -28,4 +28,35 @@ class CartTest {
         // then
         assertThat(cartUnderTest.isDeliverableTo(AddressType.PACKSTATION)).isFalse();
     }
+
+    @Entity
+    private class Cart {
+        public void put(Article article) {
+            
+        }
+
+        public boolean isDeliverableTo(AddressType type) {
+            return false;
+        }
+    }
+
+    @ValueObject
+    private record ArticleName(String name) {
+    }
+
+    @ValueObject
+    private enum ArticleCategory {
+        FURNITURE, LIFESTYLE
+    }
+
+    @Entity
+    private class Article {
+        public Article(ArticleName name, ArticleCategory category) {
+        }
+    }
+
+    @ValueObject
+    private enum AddressType {
+        HOME_ADDRESS, PACKSTATION
+    }
 }
