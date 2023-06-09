@@ -81,3 +81,36 @@ class CartTest {
                 .isTrue();
     }
 }
+
+
+
+
+
+
+
+
+@Entity
+private class Cart {
+    public void put(Article whiteCandles) {
+    }
+    public boolean isDeliverableTo(AddressType addressType) {
+        return false;
+    }
+}
+
+@ValueObject
+private record ArticleName(String name) {
+}
+
+private enum ArticleCategory {
+    FURNITURE, LIFESTYLE
+}
+
+private class Article {
+    public Article(ArticleName name, ArticleCategory category) {
+    }
+}
+
+private enum AddressType {
+    PACKSTATION, HOME_ADDRESS
+}
