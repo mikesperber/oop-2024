@@ -4,7 +4,6 @@ import org.jmolecules.ddd.annotation.Entity;
 import org.jmolecules.ddd.annotation.ValueObject;
 import org.junit.jupiter.api.Test;
 
-
 @ValueObject
 record ArticleID(int id) {
     public static ArticleID of(int id) {

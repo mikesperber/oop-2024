@@ -4,6 +4,9 @@ import org.jmolecules.ddd.annotation.Entity;
 import org.jmolecules.ddd.annotation.ValueObject;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @ValueObject
 record ArticleID(int id) {
     public static ArticleID of(int id) {
@@ -17,7 +20,7 @@ enum ArticleCategory{ LIFESTYLE, FURNITURE }
 @Entity
 class Article {
 
-    public Article(ArticleID2 id, String description, ArticleCategory category) {
+    public Article(ArticleID id, String description, ArticleCategory category) {
     }
 
 }

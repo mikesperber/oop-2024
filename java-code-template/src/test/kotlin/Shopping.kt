@@ -1,3 +1,5 @@
+package dddfpfriends.kotlin
+
 import org.assertj.core.api.Assertions.*
 
 import org.jmolecules.ddd.annotation.Entity
