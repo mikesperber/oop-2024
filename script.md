@@ -60,42 +60,72 @@ Mike: You write code, Henning.
 
 Henning: I would start in a TDD/BDD fashion.
 
+Starts with an empty test case:
+
 ```java
 import static org.assertj.core.api.Assertions.*;
 
-import org.jmolecules.ddd.annotation.Entity;
-import org.jmolecules.ddd.annotation.ValueObject;
 import org.junit.jupiter.api.Test;
 
 
 public class CartTest {
     @Test
-    void givenAnEmptyCartWhenAddingALifestyleArticleThenDeliveryAddressCanBePackstation() {
+    void givenX_whenY_thenZ() {
         // given
-        var cartUnderTest = new Cart();
         
         // when
-        cartUnderTest.put(new Article(ArticleID.of(100), "White candles", ArticleCategory.LIFESTYLE));
         
         // then
-        assertThat(cartUnderTest).isDeliverableTo(DeliveryAddress.OF("Privet Drive 4", AddressType.HOME_ADDRESS).equals(true);
-    }
-
-    @Test
-    void givenAnEmptyCartWhenAddingAFurnitureArticleThenDeliveryAddressCannotBePackstation() {
-        // given
-        var cartUnderTest = new Cart();
-        
-        // when
-        cartUnderTest.put(new Article(ArticleID.of(101), "Leather sofa", ArticleCategory.FURNITURE));
-        
-        // then
-        assertThat(cartUnderTest)
-            .isDeliverableTo(DeliveryAddress.OF("Diagon Alley", AddressType.PACKSTATION)
-            .equals(true);
     }
 }
 ```
+
+Henning then adds two first test cases:
+
+```java
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+
+public class CartTest {
+    @Test
+    void givenACart_whenPuttingALifestyleArticle_thenDeliveryAddressCanBePackstation() {
+        // given
+        var cartUnderTest = new Cart();
+
+        // when
+        cartUnderTest.put(new Article(new ArticleName("White Candles"), ArticleCategory.LIFESTYLE));
+
+        // then
+        assertThat(cartUnderTest.isDeliverableTo(AddressType.HOME_ADDRESS)).isTrue();
+    }
+
+    @Test
+    void givenAnEmptyCart_whenPuttingAFurnitureArticle_thenDeliveryAddressCannotBePackstation() {
+        // given
+        var cartUnderTest = new Cart();
+
+        // when
+        cartUnderTest.put(new Article(new ArticleName("Leather sofa"), ArticleCategory.FURNITURE));
+
+        // then
+        assertThat(cartUnderTest.isDeliverableTo(AddressType.PACKSTATION)).isFalse();
+    }
+}
+```
+
+Henning then uses the IDE to generate code in the following order:
+
+- empty class Cart -> @Entity
+- empty class Article -> another Entity
+- record ArticleName with a field "name"-> a @ValueObject
+- enum ArticleCategory -> @VO
+- Constant LIFESTYLE
+- class Article -> another Entity with a generated constructor
+- method Cart::put()
+- enum AddressType
+- constant HOME_ADDRESS
 
 Mike interrupts: OK, Henning, you design behavior - method signatures.  I design data.  Let me show how these two go together.
 
