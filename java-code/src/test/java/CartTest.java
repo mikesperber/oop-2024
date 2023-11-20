@@ -1,8 +1,7 @@
 import static org.assertj.core.api.Assertions.*;
 
-import org.jmolecules.ddd.annotation.Entity;
-import org.jmolecules.ddd.annotation.ValueObject;
 import org.junit.jupiter.api.Test;
+import shopping.*;
 
 class CartTest {
     @Test
@@ -29,34 +28,4 @@ class CartTest {
         assertThat(cartUnderTest.isDeliverableTo(AddressType.PACKSTATION)).isFalse();
     }
 
-    @Entity
-    private class Cart {
-        public void put(Article article) {
-            
-        }
-
-        public boolean isDeliverableTo(AddressType type) {
-            return false;
-        }
-    }
-
-    @ValueObject
-    private record ArticleName(String name) {
-    }
-
-    @ValueObject
-    private enum ArticleCategory {
-        FURNITURE, LIFESTYLE
-    }
-
-    @Entity
-    private class Article {
-        public Article(ArticleName name, ArticleCategory category) {
-        }
-    }
-
-    @ValueObject
-    private enum AddressType {
-        HOME_ADDRESS, PACKSTATION
-    }
 }
