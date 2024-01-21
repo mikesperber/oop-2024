@@ -1,4 +1,4 @@
-# DDD and FP Can't Be Friends, Yet
+# OOP and FP Can't Be Friends, Yet
 
 ## Java-Code
 
