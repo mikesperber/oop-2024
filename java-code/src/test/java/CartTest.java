@@ -10,7 +10,8 @@ class CartTest {
         var cartUnderTest = new Cart();
 
         // when
-        cartUnderTest.put(new Article(new ArticleName("White Candles"), ArticleCategory.LIFESTYLE));
+        cartUnderTest.put(new Article(new ArticleNumber(1),
+            new ArticleName("White Candles"), ArticleCategory.LIFESTYLE));
 
         // then
         assertThat(cartUnderTest.isDeliverableTo(AddressType.HOME_ADDRESS)).isTrue();
@@ -22,10 +23,38 @@ class CartTest {
         var cartUnderTest = new Cart();
 
         // when
-        cartUnderTest.put(new Article(new ArticleName("Leather sofa"), ArticleCategory.FURNITURE));
+        cartUnderTest.put(new Article(new ArticleNumber(1),
+            new ArticleName("Leather sofa"), ArticleCategory.FURNITURE));
 
         // then
         assertThat(cartUnderTest.isDeliverableTo(AddressType.PACKSTATION)).isFalse();
     }
 
+    @Test
+    void givenACart_whenShippingToHomeAddress_thenDeliverable() {
+        // given
+        var cartUnderTest = new Cart();
+        
+        // when
+        cartUnderTest.put(new Article(new ArticleNumber(1),
+            new ArticleName("Leather sofa"), ArticleCategory.FURNITURE));
+        
+        // then
+        assertThat(cartUnderTest.isDeliverableTo(AddressType.HOME_ADDRESS)).isTrue();
+    }
+    
+    @Test
+    void givenACart_whenPuttingFurnitureAndLifeStyle_thenDeliveryAddressCannotBePackstation() {
+        // given
+        var cartUnderTest = new Cart();
+        
+        // when
+        cartUnderTest.put(new Article(new ArticleNumber(1),
+            new ArticleName("Leather sofa"), ArticleCategory.FURNITURE));
+        cartUnderTest.put(new Article(new ArticleNumber(1),
+            new ArticleName("White Candles"), ArticleCategory.LIFESTYLE));
+        
+        // then
+        assertThat(cartUnderTest.isDeliverableTo(AddressType.PACKSTATION)).isFalse();
+    }
 }
