@@ -3,81 +3,67 @@
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 module Cart where
 
-import qualified Data.Set as Set
-import Data.Set (Set)
-import Data.List (foldl')
+import Data.Maybe (isJust)
+-- Datenanalyse
 
-data Article 
-    = Lifestyle
-    | Furniture
+-- >>> makeCart [couch, diffuser] Nothing
+-- MakeYellowCart [MakeArticle "couch" Furniture,MakeArticle "candle diffuser" Lifestyle] Nothing
+-- >>> makeCart [couch] (Just Home)
+-- MakeGreenCart [MakeArticle "couch" Furniture] Home
 
-data ShippingAddress
-    = HomeAddress
-    | PackStation
+-- Artikeltyp ist eins der folgenden:
+-- - Möbel -ODER-
+-- - Lifestyle
+data ArticleType =
+    Furniture | Lifestyle
+    deriving Show
 
-data ReasonForInvalidShippingAddress =
-    NoFurnitureToPackStation
-    deriving (Show, Eq, Ord)
+data ShippingAddress =
+    Home | Packstation
+    deriving Show
 
-data GreenCart =
-    MkGreenCart [Article] ShippingAddress
+-- Artikel hat folgende Eigenschaften:
+-- - Namen -UND-
+-- - Typ
+data Article = MakeArticle String ArticleType
+  deriving Show
 
--- this is where yellow vs. green resides
+couch :: Article
+couch = MakeArticle "couch" Furniture
+diffuser :: Article
+diffuser = MakeArticle "candle diffuser" Lifestyle
 
-data Tentative reason a =
-    TentativeGood a 
-  | TentativeNoGood a (Set reason)
-  
--- aren't the reasons attached to the articles?
--- no - domain says it's a problem with the shipping address
+articleName :: Article -> String
+articleName (MakeArticle name articleType) = name
 
-tentativeValue :: Tentative reason a -> a
-tentativeValue (TentativeGood a) = a
-tentativeValue (TentativeNoGood a _) = a 
+data Cart article =
+    MakeYellowCart [article] (Maybe ShippingAddress)
+  | MakeGreenCart [article] ShippingAddress
+  deriving Show
 
-type TentativeShippingAddress = Tentative ReasonForInvalidShippingAddress ShippingAddress
+instance Functor Cart where
+    fmap :: (a -> b) -> Cart a -> Cart b
+    fmap f (MakeYellowCart articles shippingAddress) =
+       MakeYellowCart (fmap f articles) shippingAddress
+    fmap f (MakeGreenCart articles shippingAddress) =
+       MakeGreenCart (fmap f articles) shippingAddress
 
-data YellowCart =
-    MkYellowCart [Article] (Maybe TentativeShippingAddress)
-
-
-
-checkArticleShippingAddress :: Article -> TentativeShippingAddress -> TentativeShippingAddress
-checkArticleShippingAddress article t@(TentativeGood HomeAddress) = t
-checkArticleShippingAddress Lifestyle t@(TentativeGood PackStation) = t
-checkArticleShippingAddress Furniture (TentativeGood PackStation) =
-    TentativeNoGood PackStation (Set.singleton NoFurnitureToPackStation)
-checkArticleShippingAddress Furniture (TentativeNoGood PackStation reasons) =
-    TentativeNoGood PackStation (Set.insert NoFurnitureToPackStation reasons)
-checkArticleShippingAddress article t@(TentativeNoGood shippingAddress reasons) = t
-
-mkYellowCart :: [Article] -> Maybe ShippingAddress -> YellowCart
-mkYellowCart articles Nothing = MkYellowCart articles Nothing
-mkYellowCart articles (Just shippingAddress) =
-    let tentativeShippingAddress = 
-          foldl' (flip checkArticleShippingAddress) (TentativeGood shippingAddress) articles
-    in MkYellowCart articles (Just tentativeShippingAddress)
-
-cartSingleton :: Article -> YellowCart
-cartSingleton article = MkYellowCart [article] Nothing
-
-combineCarts :: YellowCart -> YellowCart -> YellowCart
-combineCarts (MkYellowCart articles1 Nothing)
-             (MkYellowCart articles2 Nothing) =
-    mkYellowCart (articles1 ++ articles2) Nothing
-combineCarts (MkYellowCart articles1 (Just tentativeShippingAddress1))
-             (MkYellowCart articles2 Nothing) =
-    mkYellowCart (articles1 ++ articles2) (Just (tentativeValue tentativeShippingAddress1))
-combineCarts (MkYellowCart articles1 Nothing)
-             (MkYellowCart articles2 (Just tentativeShippingAddress2)) =
-    mkYellowCart (articles1 ++ articles2) (Just (tentativeValue tentativeShippingAddress2))
-combineCarts (MkYellowCart articles1 (Just tentativeShippingAddress1))
-             (MkYellowCart articles2 (Just tentativeShippingAddress2)) =
-    mkYellowCart (articles1 ++ articles2) (Just (tentativeValue tentativeShippingAddress1))
-
-addArticleToCart :: Article -> YellowCart -> YellowCart
-addArticleToCart article cart = combineCarts (cartSingleton article) cart
+data ReasonForInvalidCart =
+    NoFurnitureToPackstation
+    deriving Show
+    
+checkArticleShippingAddress :: Article -> ShippingAddress -> Maybe ReasonForInvalidCart
+checkArticleShippingAddress (MakeArticle name Furniture) Packstation =
+    Just NoFurnitureToPackstation
+checkArticleShippingAddress (MakeArticle name Furniture) Home = Nothing
+checkArticleShippingAddress (MakeArticle name Lifestyle) Packstation = Nothing
+checkArticleShippingAddress (MakeArticle name Lifestyle) Home = Nothing
 
 
--- sum type? just do one cart type
-
+makeCart :: [Article] -> Maybe ShippingAddress -> Cart Article
+makeCart articles Nothing = MakeYellowCart articles Nothing
+makeCart articles (Just Packstation) =
+    if any isJust (map (flip checkArticleShippingAddress Packstation) articles)
+    then MakeYellowCart articles (Just Packstation)
+    else MakeGreenCart articles Packstation
+makeCart articles (Just Home) = MakeGreenCart articles Home
